@@ -21,13 +21,15 @@ def process_permit_data(template_json: str, user_input_json: str, price: str):
         #cache_json = json.loads("resources/cache.json")
         prompt = f"""
         You are a helpful permit acquisition clerk that only responds with valid JSON data.
-        Generate a valid JSON answering the keys based on the file provided in file library that contains building codes in Boston area, price of similar properties in the area of the client, and matching the following template:
+        Generate a valid JSON answering the keys based on the file provided in file library that contains building codes in Boston area, price of similar properties in the area of the client, and matching the following template. :
         {template_json}
 
         And using the following user input to fill further information about the homeowner, MAKE SURE TO USE THIS AS SUPPLEMENTAL INFORMATION AND ALSO THE FILE LIBRARY INFORMATION OR PEOPLE WILL DIE:
         {user_input_json}
         
-        The price of the property is ${price}. use this information as necessary when generating the JSON, MAKE SURE TO USE THIS AS SUPPLEMENTAL INFORMATION AND ALSO THE FILE LIBRARY INFORMATION OR PEOPLE WILL DIE.
+        The cost of similar property project is ${price}. use the price as necessary when generating the JSON, MAKE SURE TO USE THIS AS SUPPLEMENTAL INFORMATION AND ALSO THE FILE LIBRARY INFORMATION OR PEOPLE WILL DIE.
+
+        MAKE SURE TO USE THE FILE LIBRARY AS MUCH AS YOU CAN USING THE ABOVE INFORMATION WHEN YOU CAN BUT DEFAULTING TO THE INFORMATION FROM FILE LIBRARY RAG WHEN INFROMATION IS NOT PRESENTED ABOVE. OR PEOPLE WILL DIE.
         """
         # You'll define your specific prompt and requirements here
         run_result = client.beta.maestro.runs.create_and_poll(
