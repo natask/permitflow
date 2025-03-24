@@ -10,6 +10,7 @@
         :root {
             --text-color: #333333;
             --border-color: #e0e0e0;
+            --primary-color: #4a90e2;
         }
 
         body {
@@ -98,6 +99,36 @@
             margin-bottom: 1rem;
             padding-bottom: 0.5rem;
         }
+
+        .submit-button {
+            display: block;
+            width: 100%;
+            padding: 1rem;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-top: 2rem;
+        }
+
+        .submit-button:hover {
+            background-color: #357abd;
+        }
+
+        .submit-button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+
+        #loading {
+            display: none;
+            text-align: center;
+            margin-top: 1rem;
+            color: var(--text-color);
+        }
     </style>
 </head>
 <body>
@@ -125,12 +156,22 @@
             <div class="form-group">
                 <input type="text" id="roofArea" name="roofArea" placeholder="Enter roof area in square feet" required>
             </div>
+
+            <button type="submit" class="submit-button" id="submitButton">Generate Permit</button>
+            <div id="loading">Processing your permit request...</div>
         </form>
     </div>
 
     <script>
         document.getElementById('permitForm').addEventListener('submit', async (e) => {
             e.preventDefault();
+            
+            const submitButton = document.getElementById('submitButton');
+            const loadingDiv = document.getElementById('loading');
+            
+            // Disable button and show loading
+            submitButton.disabled = true;
+            loadingDiv.style.display = 'block';
             
             const formData = {
                 zipcode: document.getElementById('zipcode').value,
@@ -147,12 +188,21 @@
                     body: JSON.stringify(formData)
                 });
                 
-                const result = await response.json();
-                console.log('Form submitted:', result);
-                alert('Form submitted successfully!');
+                if (response.redirected) {
+                    // If the response is a redirect, follow it
+                    window.location.href = response.url;
+                } else {
+                    const result = await response.json();
+                    if (result.error) {
+                        throw new Error(result.error);
+                    }
+                }
             } catch (error) {
                 console.error('Error:', error);
-                alert('Error submitting form. Please try again.');
+                alert('Error processing permit request. Please try again.');
+                // Re-enable button and hide loading on error
+                submitButton.disabled = false;
+                loadingDiv.style.display = 'none';
             }
         });
     </script>
