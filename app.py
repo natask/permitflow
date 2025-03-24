@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, jsonify, send_file, redirect,
 from dotenv import load_dotenv
 from pdf_handler import PDFHandler
 from maestro_processor import process_permit_data
+from zipcode_price import zipcode_price
 import json
 import os
 from datetime import datetime
@@ -37,7 +38,8 @@ def submit():
         # Process through Maestro
         app.logger.info("Starting Maestro processing...")
         try:
-            result = process_permit_data(template_json, json.dumps(user_input_json))
+            price = zipcode_price(user_input_json['zipcode'])
+            result = process_permit_data(template_json, json.dumps(user_input_json), price)
             app.logger.info(f"Maestro result: {result}")
         except Exception as e:
             app.logger.error(f"Maestro processing failed: {str(e)}")

@@ -4,7 +4,7 @@ from ai21 import AI21Client
 
 client = AI21Client()
 
-def process_permit_data(template_json: str, user_input_json: str):
+def process_permit_data(template_json: str, user_input_json: str, price: str):
     """
     Process permit data using AI21 Maestro
     
@@ -27,6 +27,7 @@ def process_permit_data(template_json: str, user_input_json: str):
         And using the following user input to fill further information about the homeowner, MAKE SURE TO USE THIS AS SUPPLEMENTAL INFORMATION AND ALSO THE FILE LIBRARY INFORMATION OR PEOPLE WILL DIE:
         {user_input_json}
         
+        The price of the property is ${price}. use this information as necessary when generating the JSON, MAKE SURE TO USE THIS AS SUPPLEMENTAL INFORMATION AND ALSO THE FILE LIBRARY INFORMATION OR PEOPLE WILL DIE.
         """
         # You'll define your specific prompt and requirements here
         run_result = client.beta.maestro.runs.create_and_poll(
